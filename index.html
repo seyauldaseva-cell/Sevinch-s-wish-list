@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Вишлист</title>
+  <meta name="description" content="Вишлист: выбери подарок и забронируй, чтобы не было дублей." />
+  <style>
+    body{
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:#fafafa;
+      margin:0;
+      color:#111;
+    }
+    header{
+      max-width:1040px;
+      margin:0 auto;
+      padding:22px 16px 10px;
+    }
+    h1{ margin:0 0 8px; letter-spacing:-.2px; }
+    .sub{
+      color:#666;
+      margin:0 0 14px;
+      line-height:1.35;
+    }
+    .bar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input{
+      flex:1;
+      min-width:240px;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid #e5e5e5;
+      background:#fff;
+      font-size:16px;
+      outline:none;
+    }
+    input:focus{ border-color:#cfcfcf; }
+    .pill{
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid #e5e5e5;
+      background:#fff;
+      font-size:14px;
+      color:#111;
+      white-space:nowrap;
+    }
+    main{
+      max-width:1040px;
+      margin:0 auto;
+      padding:0 16px 26px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+      gap:12px;
+    }
+    .card{
+      background:#fff;
+      border:1px solid #eee;
+      border-radius:16px;
+      padding:14px;
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .img{
+      width:100%;
+      height:190px;
+      object-fit:cover;
+      border-radius:12px;
+      background:#f2f2f2;
+    }
+    .row{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+    }
+    .title{
+      font-weight:800;
+      margin:0;
+      line-height:1.2;
+      letter-spacing:-.1px;
+    }
+    .meta{
+      color:#666;
+      font-size:14px;
+      margin:0;
+    }
+    .desc{
+      font-size:14px;
+      color:#444;
+      margin:0;
+      line-height:1.45;
+    }
+    .badge{
+      font-size:12px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid;
+      white-space:nowrap;
+      margin-top:2px;
+    }
+    .free{
+      background:#eafff2;
+      border-color:#b7f5cf;
+      color:#067647;
+    }
+    .taken{
+      background:#ffecec;
+      border-color:#ffc7c7;
+      color:#b42318;
+    }
+    .btns{
+      display:flex;
+      gap:10px;
+      margin-top:auto;
+    }
+    a.btn, button.btn{
+      flex:1;
+      border-radius:12px;
+      padding:10px 12px;
+      border:1px solid #ddd;
+      background:#fff;
+      cursor:pointer;
+      text-decoration:none;
+      color:#111;
+      font-size:15px;
+      text-align:center;
+    }
+    a.btn.primary{
+      background:#111;
+      color:#fff;
+      border-color:#111;
+    }
+    button.btn:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+    .hint{
+      max-width:1040px;
+      margin:0 auto;
+      padding:0 16px 18px;
+      color:#777;
+      font-size:13px;
+      line-height:1.45;
+    }
+    .empty{
+      padding:18px;
+      border-radius:16px;
+      border:1px dashed #ddd;
+      color:#666;
+      background:#fff;
+      text-align:center;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>🎁 Мой вишлист</h1>
+    <p class="sub">
+      Выбирай любой подарок. Если позиция “Занято” — значит уже забронировали, чтобы не было дублей.
+      <br>Сюрприз сохраняем: имён здесь нет 😌
+    </p>
+
+    <div class="bar">
+      <input id="q" type="search" placeholder="Поиск по названию… (например: книга / серьги / цветы)" />
+      <span class="pill" id="count">0 позиций</span>
+      <span class="pill" id="takenCount">Занято: 0</span>
+    </div>
+  </header>
+
+  <main>
+    <div class="grid" id="list"></div>
+    <div id="empty" class="empty" style="display:none;">Ничего не найдено. Попробуй другое слово ✨</div>
+  </main>
+
+  <div class="hint">
+    💡 Если хочется подарить что-то своё — тоже ок. Этот список просто помогает не повторяться.
+  </div>
+
+<script>
+  // =========================
+  // 1) СПИСОК ПОДАРКОВ
+  // =========================
+  // status: "free" или "taken"
+  // img: прямая ссылка на картинку (лучше .jpg/.png/.webp)
+  const items = [
+    {
+      id: 1,
+      title: "Цветы (букет)",
+      price: "~300 000 сум",
+      img: "https://images.unsplash.com/photo-1526045478516-99145907023c?auto=format&fit=crop&w=1200&q=80",
+      desc: "Нежный букет (пионы/тюльпаны/розы — что будет красивее 💐).",
+      buy: "https://example.com",
+      status: "free"
+    },
+    {
+      id: 2,
+      title: "Аксессуар (серьги / браслет)",
+      price: "~800 000 сум",
+      img: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1200&q=80",
+      desc: "Минималистично и аккуратно. Серебро или золото — оба варианта ок ✨",
+      buy: "https://example.com",
+      status: "free"
+    },
+    {
+      id: 3,
+      title: "Книга (конкретная из списка)",
+      price: "~90 000 сум",
+      img: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1200&q=80",
+      desc: "Любое издание в хорошем состоянии. Можно с красивой обложкой 📚",
+      buy: "https://example.com",
+      status: "free"
+    }
+  ];
+
+  // =========================
+  // 2) РЕНДЕР + ПОИСК
+  // =========================
+  const list = document.getElementById('list');
+  const q = document.getElementById('q');
+  const count = document.getElementById('count');
+  const takenCount = document.getElementById('takenCount');
+  const empty = document.getElementById('empty');
+
+  function badge(status){
+    return status === "taken"
+      ? `<span class="badge taken">Занято</span>`
+      : `<span class="badge free">Свободно</span>`;
+  }
+
+  function cardHTML(x){
+    const disabled = x.status === "taken" ? "disabled" : "";
+    const safeImg = x.img || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80";
+
+    return `
+      <div class="card" data-title="${(x.title||"").toLowerCase()}">
+        <img class="img" src="${safeImg}" alt="${x.title || "подарок"}" loading="lazy" />
+        <div class="row">
+          <p class="title">${x.title || ""}</p>
+          ${badge(x.status)}
+        </div>
+        <p class="meta">${x.price || ""}</p>
+        <p class="desc">${x.desc || ""}</p>
+        <div class="btns">
+          <a class="btn primary" href="${x.buy || "#"}" target="_blank" rel="noopener">Купить</a>
+          <button class="btn" ${disabled} onclick="demoReserve(${x.id})">Забронировать</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function render(){
+    const term = (q.value || "").trim().toLowerCase();
+    const filtered = items.filter(x => (x.title||"").toLowerCase().includes(term));
+
+    list.innerHTML = filtered.map(cardHTML).join("");
+    count.textContent = `${filtered.length} позиций`;
+
+    const taken = items.filter(x => x.status === "taken").length;
+    takenCount.textContent = `Занято: ${taken}`;
+
+    empty.style.display = filtered.length ? "none" : "block";
+  }
+
+  q.addEventListener('input', render);
+
+  // =========================
+  // 3) ДЕМО-БРОНЬ
+  // =========================
+  function demoReserve(id){
+    const it = items.find(x => x.id === id);
+    if(!it || it.status === "taken") return;
+    it.status = "taken";
+    render();
+    alert("✅ Забронировано (демо). Если захочешь — подключим настоящую анонимную бронь, чтобы всем было видно онлайн.");
+  }
+
+  render();
+</script>
+
+</body>
+</html>
