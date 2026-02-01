@@ -6,165 +6,294 @@
   <title>Вишлист</title>
   <meta name="description" content="Данный список несет исключительно рекомендационный характер, и был создан в целях упрощения поиска подарков для именинницы. Любая инициатива одобряется и поддерживается, вне зависимости от совместимости с данным списком.." />
   <style>
-    body{
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:#fafafa;
-      margin:0;
-      color:#111;
-    }
-    header{
-      max-width:1040px;
-      margin:0 auto;
-      padding:22px 16px 10px;
-    }
-    h1{ margin:0 0 8px; letter-spacing:-.2px; }
-    .sub{
-      color:#666;
-      margin:0 0 14px;
-      line-height:1.35;
-    }
-    .bar{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-    input{
-      flex:1;
-      min-width:240px;
-      padding:12px 12px;
-      border-radius:12px;
-      border:1px solid #e5e5e5;
-      background:#fff;
-      font-size:16px;
-      outline:none;
-    }
-    input:focus{ border-color:#cfcfcf; }
-    .pill{
-      padding:10px 12px;
-      border-radius:999px;
-      border:1px solid #e5e5e5;
-      background:#fff;
-      font-size:14px;
-      color:#111;
-      white-space:nowrap;
-    }
-    main{
-      max-width:1040px;
-      margin:0 auto;
-      padding:0 16px 26px;
-    }
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-      gap:12px;
-    }
-    .card{
-      background:#fff;
-      border:1px solid #eee;
-      border-radius:16px;
-      padding:14px;
-      overflow:hidden;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .img{
-      width:100%;
-      height:190px;
-      object-fit:cover;
-      border-radius:12px;
-      background:#f2f2f2;
-    }
-    .row{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:10px;
-    }
-    .title{
-      font-weight:800;
-      margin:0;
-      line-height:1.2;
-      letter-spacing:-.1px;
-    }
-    .meta{
-      color:#666;
-      font-size:14px;
-      margin:0;
-    }
-    .desc{
-      font-size:14px;
-      color:#444;
-      margin:0;
-      line-height:1.45;
-    }
-    .badge{
-      font-size:12px;
-      padding:4px 8px;
-      border-radius:999px;
-      border:1px solid;
-      white-space:nowrap;
-      margin-top:2px;
-    }
-    .free{
-      background:#eafff2;
-      border-color:#b7f5cf;
-      color:#067647;
-    }
-    .taken{
-      background:#ffecec;
-      border-color:#ffc7c7;
-      color:#b42318;
-    }
-    .btns{
-      display:flex;
-      gap:10px;
-      margin-top:auto;
-    }
-    a.btn, button.btn{
-      flex:1;
-      border-radius:12px;
-      padding:10px 12px;
-      border:1px solid #ddd;
-      background:#fff;
-      cursor:pointer;
-      text-decoration:none;
-      color:#111;
-      font-size:15px;
-      text-align:center;
-    }
-    a.btn.primary{
-      background:#111;
-      color:#fff;
-      border-color:#111;
-    }
-    button.btn:disabled{
-      opacity:.55;
-      cursor:not-allowed;
-    }
-    .hint{
-      max-width:1040px;
-      margin:0 auto;
-      padding:0 16px 18px;
-      color:#777;
-      font-size:13px;
-      line-height:1.45;
-    }
-    .empty{
-      padding:18px;
-      border-radius:16px;
-      border:1px dashed #ddd;
-      color:#666;
-      background:#fff;
-      text-align:center;
-    }
+  /* ===== Barbie theme ===== */
+:root{
+  --bg1:#fff0f7;
+  --bg2:#ffe1f1;
+  --pink:#ff4fa3;
+  --hot:#ff2d95;
+  --soft:#fff3fa;
+  --text:#1a0f1a;
+  --muted:#6b3b5f;
+  --card:rgba(255,255,255,.72);
+  --stroke:rgba(255,79,163,.20);
+  --shadow: 0 18px 50px rgba(255, 45, 149, .15);
+  --shadow2: 0 10px 24px rgba(0,0,0,.06);
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  margin:0;
+  color:var(--text);
+  background:
+    radial-gradient(1200px 900px at 10% 0%, rgba(255,79,163,.20), transparent 60%),
+    radial-gradient(900px 700px at 95% 12%, rgba(255,45,149,.18), transparent 55%),
+    radial-gradient(900px 700px at 50% 110%, rgba(255,165,210,.25), transparent 50%),
+    linear-gradient(180deg, var(--bg1), var(--bg2));
+}
+
+/* subtle sparkles */
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255,255,255,.55) 0 2px, transparent 3px),
+    radial-gradient(circle at 82% 22%, rgba(255,255,255,.50) 0 2px, transparent 3px),
+    radial-gradient(circle at 64% 68%, rgba(255,255,255,.45) 0 2px, transparent 3px),
+    radial-gradient(circle at 22% 72%, rgba(255,255,255,.50) 0 2px, transparent 3px);
+  opacity:.55;
+  filter: blur(.2px);
+}
+
+header{
+  max-width:1040px;
+  margin:0 auto;
+  padding:26px 16px 12px;
+}
+
+h1{
+  margin:0 0 8px;
+  letter-spacing:-.5px;
+  font-weight:900;
+  font-size: clamp(28px, 4vw, 40px);
+  background: linear-gradient(90deg, var(--hot), var(--pink), #ff87c7);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+
+  /* Barbie glow ✨ */
+  text-shadow:
+    0 0 6px rgba(255,79,163,.55),
+    0 0 14px rgba(255,79,163,.45),
+    0 0 26px rgba(255,45,149,.35),
+    0 10px 28px rgba(255,45,149,.25);
+}
+
+.sub{
+  color:var(--muted);
+  margin:0 0 16px;
+  line-height:1.45;
+}
+
+.bar{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+
+input{
+  flex:1;
+  min-width:240px;
+  padding:12px 14px;
+  border-radius:14px;
+  border:1px solid rgba(255,79,163,.25);
+  background: rgba(255,255,255,.80);
+  font-size:16px;
+  outline:none;
+  box-shadow: 0 12px 30px rgba(255,45,149,.10);
+}
+
+input:focus{
+  border-color: rgba(255,45,149,.55);
+  box-shadow: 0 18px 40px rgba(255,45,149,.18);
+}
+
+.pill{
+  padding:10px 12px;
+  border-radius:999px;
+  border:1px solid rgba(255,79,163,.25);
+  background: rgba(255,255,255,.72);
+  font-size:14px;
+  color:var(--muted);
+  white-space:nowrap;
+  box-shadow: var(--shadow2);
+}
+
+main{
+  max-width:1040px;
+  margin:0 auto;
+  padding:0 16px 26px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:14px;
+}
+
+.card{
+  background: var(--card);
+  border:1px solid var(--stroke);
+  border-radius:20px;
+  padding:14px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transform: translateY(0);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.card:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 26px 70px rgba(255,45,149,.18);
+  border-color: rgba(255,45,149,.35);
+}
+
+.img{
+  width:100%;
+  height:200px;
+  object-fit:cover;
+  border-radius:16px;
+  background:#f2f2f2;
+  box-shadow: 0 16px 40px rgba(0,0,0,.08);
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:10px;
+}
+
+.title{
+  font-weight:900;
+  margin:0;
+  line-height:1.15;
+  letter-spacing:-.2px;
+}
+
+.meta{
+  color:var(--muted);
+  font-size:14px;
+  margin:0;
+}
+
+.desc{
+  font-size:14px;
+  color:#3a1630;
+  margin:0;
+  line-height:1.5;
+}
+
+.badge{
+  font-size:12px;
+  padding:5px 10px;
+  border-radius:999px;
+  border:1px solid;
+  white-space:nowrap;
+  margin-top:2px;
+  font-weight:700;
+}
+
+.free{
+  background: rgba(255,255,255,.70);
+  border-color: rgba(6,118,71,.25);
+  color:#067647;
+}
+
+.taken{
+  background: rgba(255,255,255,.70);
+  border-color: rgba(255,45,149,.35);
+  color: var(--hot);
+}
+
+/* buttons */
+.btns{
+  display:flex;
+  gap:10px;
+  margin-top:auto;
+}
+
+a.btn, button.btn{
+  flex:1;
+  border-radius:14px;
+  padding:11px 12px;
+  border:1px solid rgba(255,79,163,.25);
+  background: rgba(255,255,255,.78);
+  cursor:pointer;
+  text-decoration:none;
+  color:#7a1f53;
+  font-size:15px;
+  text-align:center;
+  font-weight:800;
+  box-shadow: var(--shadow2);
+  transition: transform .16s ease, box-shadow .16s ease, background .16s ease, border-color .16s ease;
+}
+
+a.btn:hover, button.btn:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px rgba(255,45,149,.14);
+  border-color: rgba(255,45,149,.40);
+}
+
+a.btn.primary{
+  background: linear-gradient(135deg, #ff2d95, #ff64b1, #ff98cc);
+  border-color: rgba(255,45,149,.50);
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+}
+
+/* glossy shine */
+a.btn.primary:before{
+  content:"";
+  position:absolute;
+  inset:-40% -20%;
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.45) 45%, transparent 60%);
+  transform: translateX(-60%) rotate(10deg);
+  transition: transform .5s ease;
+}
+
+a.btn.primary:hover:before{
+  transform: translateX(40%) rotate(10deg);
+}
+
+button.btn{
+  background: rgba(255,240,247,.85);
+  border-color: rgba(255,79,163,.35);
+  color:#b3125e;
+}
+
+button.btn:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+  transform:none;
+  box-shadow:none;
+}
+
+.hint{
+  max-width:1040px;
+  margin:0 auto;
+  padding:0 16px 18px;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.45;
+}
+
+.empty{
+  padding:18px;
+  border-radius:18px;
+  border:1px dashed rgba(255,79,163,.35);
+  color:var(--muted);
+  background: rgba(255,255,255,.72);
+  text-align:center;
+  box-shadow: var(--shadow2);
+}
   </style>
 </head>
 
 <body>
   <header>
-    <h1> Мой вишлист</h1>
+    <h1>🎀 Мой вишлист</h1>
     <p class="sub">
       Список сделан исключительно в целях упростить поиск подарка
       <br> Бронь анонимная  
