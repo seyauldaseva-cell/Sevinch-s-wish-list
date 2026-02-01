@@ -188,6 +188,7 @@
 
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbylXpFOJh3uKgnDCR7qOm4PSdVcFhugoUne2kg6vJh24bftd0JP758t6qclTEUO_GpU/exec";
+let items = [];
   // =========================
   // 1) СПИСОК ПОДАРКОВ
   // =========================
@@ -232,15 +233,16 @@
         </div>
       </div>
     `;
-  }
-  async function loadItems(){
+async function loadItems(){
   const res = await fetch(API_URL);
   const data = await res.json();
+
   items = (data.items || []).map(x => ({
     ...x,
-    id: String(x.id),
+    id: String(x.id).trim(),
     status: String(x.status || "free").trim()
   }));
+
   render();
 }
 
