@@ -186,18 +186,11 @@
     potom pridumayu
   </div>
 
+
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbylXpFOJh3uKgnDCR7qOm4PSdVcFhugoUne2kg6vJh24bftd0JP758t6qclTEUO_GpU/exec";
-let items = [];
-  // =========================
-  // 1) СПИСОК ПОДАРКОВ
-  // =========================
-  // status: "free" или "taken"
-  // img: прямая ссылка на картинку (лучше .jpg/.png/.webp)
-  const items = [
-    let items = [];
-      
-  ];
+  
+  let items = [];
 
   // =========================
   // 2) РЕНДЕР + ПОИСК
@@ -233,18 +226,20 @@ let items = [];
         </div>
       </div>
     `;
-async function loadItems(){
-  const res = await fetch(API_URL);
-  const data = await res.json();
+  }
 
-  items = (data.items || []).map(x => ({
-    ...x,
-    id: String(x.id).trim(),
-    status: String(x.status || "free").trim()
-  }));
+  async function loadItems(){
+    const res = await fetch(API_URL);
+    const data = await res.json();
 
-  render();
-}
+    items = (data.items || []).map(x => ({
+      ...x,
+      id: String(x.id).trim(),
+      status: String(x.status || "free").trim()
+    }));
+
+    render();
+  }
 
   function render(){
     const term = (q.value || "").trim().toLowerCase();
@@ -261,31 +256,27 @@ async function loadItems(){
 
   q.addEventListener('input', render);
 
-  // =========================
-  // 3) БРОНЬ
-  // =========================
   async function reserve(id){
-  try{
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({ id: String(id) })
-    });
+    try{
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ id: String(id) })
+      });
 
-    const out = await res.json();
+      const out = await res.json();
 
-    if(!out.ok){
-      alert("Упс, уже заняли");
+      if(!out.ok){
+        alert("Упс, уже заняли");
+        await loadItems();
+        return;
+      }
+
       await loadItems();
-      return;
+      alert("Забронировано!");
+    }catch(err){
+      alert("Ошибка соединения. Попробуй ещё раз 🙏");
     }
-
-    await loadItems();
-    alert("Забронировано!");
-  }catch(err){
-    alert("Ошибка соединения. Попробуй ещё раз 🙏");
-  }
-}
   }
 
   loadItems();
