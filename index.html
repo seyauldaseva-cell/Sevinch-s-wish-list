@@ -256,28 +256,25 @@
 
   q.addEventListener('input', render);
 
-  async function reserve(id){
-    try{
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({ id: String(id) })
-      });
+async function reserve(id){
+  try{
+    const url = API_URL + "?action=reserve&id=" + encodeURIComponent(String(id)) + "&t=" + Date.now();
+    const res = await fetch(url);
+    const out = await res.json();
 
-      const out = await res.json();
-
-      if(!out.ok){
-        alert("Упс, уже заняли");
-        await loadItems();
-        return;
-      }
-
+    if(!out.ok){
+      alert("Упс, уже заняли ");
       await loadItems();
-      alert("Забронировано!");
-    }catch(err){
-      alert("Ошибка соединения. Попробуй ещё раз 🙏");
+      return;
     }
+
+    alert("Забронировано!");
+    await loadItems();
+  }catch(err){
+    alert("Ошибка соединения. Попробуй ещё раз 🙏");
+    console.error(err);
   }
+}
 
   loadItems();
 </script>
