@@ -187,103 +187,14 @@
   </div>
 
 <script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbylXpFOJh3uKgnDCR7qOm4PSdVcFhugoUne2kg6vJh24bftd0JP758t6qclTEUO_GpU/exec";
   // =========================
   // 1) СПИСОК ПОДАРКОВ
   // =========================
   // status: "free" или "taken"
   // img: прямая ссылка на картинку (лучше .jpg/.png/.webp)
   const items = [
-    {
-      id: 1,
-      title: "Цветочки",
-      price: "по желанию",
-      img: "https://raw.githubusercontent.com/seyauldaseva-cell/Sevinch-s-wish-list/main/flowers.jpg",
-      desc: "рада буду всему, что напоминает вам обо мне",
-      buy: "https://example.com",
-      status: "free"
-    },
-    {
-      id: 2,
-      title: "Аксессуары (серьги / браслет / кольцо)",
-      price: "от 200 000 сум",
-      img: "https://raw.githubusercontent.com/seyauldaseva-cell/Sevinch-s-wish-list/main/jewelry.jpg",
-      desc: "Люблю минимализм и серебро",
-      buy: "https://example.com",
-      status: "free"
-    },
-    {
-      id: 3,
-      title: "Книга (конкретная из списка)",
-      price: "от 55 000 сум",
-      img: "https://raw.githubusercontent.com/seyauldaseva-cell/Sevinch-s-wish-list/main/books.jpg",
-      desc: "Романы Агаты Кристи с участиеи Пуаро (зло под солнцем / занавес / таинственный противник) Мураками ( кафка на пляже / мужчины без женщин ) ",
-      buy: "https://example.com",
-      status: "free"
-    } ,
-    {
-      id: 4, 
-      title: "лосьены, мисты, крема",
-      price: "от 300 000 сум", 
-      img: "https://raw.githubusercontent.com/seyauldaseva-cell/Sevinch-s-wish-list/main/lotion.jpg", 
-      desc: "люблю все что пахнет приятно, а если блестит то вообще счастье", 
-      buy: "https://example.com",
-      status: "free"
-    },
-    {
-      id: 5,
-      title: "косметика",
-      price: "от 60 000 сум", 
-      img: "https://raw.githubusercontent.com/seyauldaseva-cell/Sevinch-s-wish-list/main/cosmetics.jpg",
-      desc: "из уходовой и спф пользуюсь только корейской, остальное на ваш вкус",
-      buy: "https://example.com",
-      status: "free"
-    },
-    {
-      id: 5,
-      title: "набор сладостей",
-      price: "от 180 000 сум",
-      img: "https://raw.githubusercontent.com/seyauldaseva-cell/Sevinch-s-wish-list/main/kinder.jpg",
-      desc: "наборы из клубники в шоколаде или же из киндера",
-      buy: "https://example.com.",
-      status: "free"
-    },
-    {
-      id: 6,
-      title: "паззлы и конструкторы",
-      price: "от 150 000 сум",
-      img: "https://raw.githubusercontent.com/seyauldaseva-cell/Sevinch-s-wish-list/main/puzzle.jpg",
-      desc: "любые паззлы, конструкторы, мозаики или картины по номерам",
-      buy: "https://example.com.",
-      status: "free",
-    },
-  
-    {
-      id: 7,
-      title: "все, что связано с Наруто",
-      price: "от 60 000 сум",
-      img: "https://raw.githubusercontent.com/seyauldaseva-cell/Sevinch-s-wish-list/main/naruto.jpg",
-      desc: "мерч, лабубу и все что имеет отношение к наруто, потому что я жуткая фанючка (если вы найдете плащ с эмблемой клана Учиха то вы лучший)",
-      buy: "https://example.com.",
-      status: "free"
-    },
-    {
-      id: 8, 
-      title: "наушники",
-      price: "$ 179",
-      img: "https://raw.githubusercontent.com/seyauldaseva-cell/Sevinch-s-wish-list/main/airpods.jpg",
-      desc: "airpods 4 with active noise cancellation",
-      buy: "https://example.com.",
-      status: "free"
-    },
-    {
-      id: 9,
-      title: "парфюм",
-      price: "$ 120",
-      img: "https://raw.githubusercontent.com/seyauldaseva-cell/Sevinch-s-wish-list/main/prada.jpg",
-      desc: "prada paradoxe",
-      buy: "https://example.com.",
-      status: "free"
-    },
+    let items = [];
       
   ];
 
@@ -317,11 +228,21 @@
         <p class="desc">${x.desc || ""}</p>
         <div class="btns">
           <a class="btn primary" href="${x.buy || "#"}" target="_blank" rel="noopener">Купить</a>
-          <button class="btn" ${disabled} onclick="demoReserve(${x.id})">Забронировать</button>
+          <button class="btn" ${disabled} onclick="reserve('${x.id}')">Забронировать</button>
         </div>
       </div>
     `;
   }
+  async function loadItems(){
+  const res = await fetch(API_URL);
+  const data = await res.json();
+  items = (data.items || []).map(x => ({
+    ...x,
+    id: String(x.id),
+    status: String(x.status || "free").trim()
+  }));
+  render();
+}
 
   function render(){
     const term = (q.value || "").trim().toLowerCase();
@@ -339,17 +260,33 @@
   q.addEventListener('input', render);
 
   // =========================
-  // 3) ДЕМО-БРОНЬ
+  // 3) БРОНЬ
   // =========================
-  function demoReserve(id){
-    const it = items.find(x => x.id === id);
-    if(!it || it.status === "taken") return;
-    it.status = "taken";
-    render();
-    alert(" Забронировано (демо). potom podklyuchu google sheets");
+  async function reserve(id){
+  try{
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ id: String(id) })
+    });
+
+    const out = await res.json();
+
+    if(!out.ok){
+      alert("Упс, уже заняли");
+      await loadItems();
+      return;
+    }
+
+    await loadItems();
+    alert("Забронировано!");
+  }catch(err){
+    alert("Ошибка соединения. Попробуй ещё раз 🙏");
+  }
+}
   }
 
-  render();
+  loadItems();
 </script>
 
 </body>
